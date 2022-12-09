@@ -1,0 +1,22 @@
+{
+
+  "manifest_version": 2,
+  "name": "NoShorts",
+  "version": "1.0",
+
+  "description": "Removes Youtube Shorts from pages.",
+
+  "icons": {
+    "48": "icons/noShorts-48.png",
+    "96": "icons/noShorts-96.png"
+  },
+
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["noShorts.js"]
+    }
+  ]
+
+}
