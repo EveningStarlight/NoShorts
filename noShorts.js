@@ -1,10 +1,11 @@
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 let cleanedSidebar = false;
+let cleanedShortsRow = false;
 var observer = new MutationObserver(function(mutations, observer) {
     if (!cleanedSidebar) {clearSidebar();}
+    if (!cleanedShortsRow) {clearShortsRow();}
     clearVideos();
-    // ...
 });
 
 // define what element should be observed by the observer
@@ -12,7 +13,6 @@ var observer = new MutationObserver(function(mutations, observer) {
 observer.observe(document, {
   subtree: true,
   attributes: true
-  //...
 });
 
 function clearSidebar() {
@@ -20,6 +20,14 @@ function clearSidebar() {
   if (shortsSidebar !== null) {
     shortsSidebar.parentElement.remove();
     cleanedSidebar = true
+  }
+}
+
+function clearShortsRow() {
+  const shortsRow = document.querySelector('ytd-rich-section-renderer');
+  if (shortsRow !== null) {
+    shortsRow.remove();
+    cleanedShortsRow = true
   }
 }
 
