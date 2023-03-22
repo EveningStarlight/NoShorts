@@ -1,10 +1,9 @@
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 let cleanedSidebar = false;
-let cleanedShortsRow = false;
 var observer = new MutationObserver(function(mutations, observer) {
     if (!cleanedSidebar) {clearSidebar();}
-    if (!cleanedShortsRow) {clearShortsRow();}
+    clearRichSelectionRow();
     clearVideos();
 });
 
@@ -15,6 +14,7 @@ observer.observe(document, {
   attributes: true
 });
 
+// Will remve the shorts button from the youtube sidebar
 function clearSidebar() {
   const shortsSidebar = document.querySelector('a[title="Shorts"]');
   if (shortsSidebar !== null) {
@@ -23,14 +23,15 @@ function clearSidebar() {
   }
 }
 
-function clearShortsRow() {
-  const shortsRow = document.querySelector('ytd-rich-section-renderer');
-  if (shortsRow !== null) {
-    shortsRow.remove();
-    cleanedShortsRow = true
-  }
+// Will remove any rich selection row, including Shorts, News
+function clearRichSelectionRow() {
+  const richSelectionRows = document.querySelectorAll('ytd-rich-section-renderer');
+  [...richSelectionRows].forEach(function(row) {
+    row.remove();
+  })
 }
 
+// Will remove any uploaded shorts on your subscription page
 function clearVideos() {
   const shortVideos = document.querySelectorAll('span[aria-label="Shorts"]');
   [...shortVideos].forEach(function(video) {
