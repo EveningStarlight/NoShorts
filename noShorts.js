@@ -35,6 +35,6 @@ function clearRichSelectionRow() {
 function clearVideos() {
   const shortVideos = document.querySelectorAll('span[aria-label="Shorts"]');
   [...shortVideos].forEach(function(video) {
-    video.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
+    video.closest('ytd-rich-item-renderer.ytd-rich-grid-row').remove();
   })
 }
