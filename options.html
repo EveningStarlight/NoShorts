@@ -12,7 +12,7 @@
     @media (prefers-color-scheme: dark) {
       :root {
         color: #e5e7eb;
-        background: #11161d;
+        background: #0f0f0f;
       }
     }
 
@@ -27,8 +27,6 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: radial-gradient(circle at top, rgba(79, 138, 255, 0.14), transparent 32%),
-                  radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.12), transparent 24%);
     }
 
     .panel {
@@ -48,16 +46,27 @@
     }
 
     h1 {
-      margin: 0 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 0 0 30px;
       font-size: 1.4rem;
       letter-spacing: -0.02em;
+    }
+
+    .logo {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      border-radius: 8px;
     }
 
     label {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin: 12px 0;
+      margin: 2px 0;
       padding: 12px 14px;
       border-radius: 14px;
       cursor: pointer;
@@ -91,7 +100,10 @@
 </head>
 <body>
   <div class="panel">
-    <h1>NoShorts settings</h1>
+    <h1>
+      <img class=""logo" src="icons/noShorts-48.png" alt="NoShorts logo">
+      NoShorts settings
+    </h1>
     <label><input type="checkbox" id="sidebar"> Remove sidebar Shorts</label><br>
     <label><input type="checkbox" id="rows"> Remove Rich Selection rows (Shorts, News, Explore, Most Relavent)</label><br>
     <label><input type="checkbox" id="videos"> Remove Shorts videos</label><br>
