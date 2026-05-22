@@ -75,10 +75,7 @@ function clearSidebar() {
 
 function clearRichSelectionRows() {
   document.querySelectorAll('ytd-rich-section-renderer').forEach(row => {
-    const text = row.textContent || '';
-    if (/shorts|news/i.test(text)) {
-      row.remove();
-    }
+    if (row) row.remove();
   });
 }
 
