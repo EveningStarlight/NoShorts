@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>NoShorts settings</title>
+  <style>
+    :root {
+      color: #111;
+      background: #f4f6f8;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color: #e5e7eb;
+        background: #0f0f0f;
+      }
+    }
+
+    html, body {
+      min-height: 100%;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .panel {
+      width: min(540px, 100%);
+      padding: 22px 24px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+      backdrop-filter: blur(18px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .panel {
+        background: rgba(18, 22, 29, 0.88);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.55);
+      }
+    }
+
+    h1 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 0 0 30px;
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 2px 0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+      background: rgba(15, 23, 42, 0.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      label {
+        background: rgba(255, 255, 255, 0.06);
+      }
+    }
+
+    label:hover {
+      transform: translateY(-1px);
+      background: rgba(79, 139, 255, 0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      label:hover {
+        background: rgba(79, 139, 255, 0.14);
+      }
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #4f8bff;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>
+      <img class=""logo" src="icons/noShorts-48.png" alt="NoShorts logo">
+      NoShorts settings
+    </h1>
+    <label><input type="checkbox" id="sidebar"> Remove sidebar Shorts</label><br>
+    <label><input type="checkbox" id="rows"> Remove Rich Selection rows (Shorts, News, Explore, Most Relavent)</label><br>
+    <label><input type="checkbox" id="videos"> Remove Shorts videos</label><br>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

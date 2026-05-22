@@ -1,40 +1,89 @@
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
+const storage = browser.storage || chrome.storage;
+
+const defaultSettings = {
+  sidebar: true,
+  rows: true,
+  videos: true
+};
+
+let settings = { ...defaultSettings };
 let cleanedSidebar = false;
-var observer = new MutationObserver(function(mutations, observer) {
-    if (!cleanedSidebar) {clearSidebar();}
-    clearRichSelectionRow();
-    clearVideos();
-});
+let cleanupScheduled = false;
 
-// define what element should be observed by the observer
-// and what types of mutations trigger the callback
-observer.observe(document, {
-  subtree: true,
-  attributes: true
-});
+function init() {
+  storage.local.get(defaultSettings).then(result => {
+    settings = result;
+    if (settings.sidebar || settings.rows || settings.videos) {
+      observePage();
+      cleanUpShorts();
+    }
+  });
 
-// Will remve the shorts button from the youtube sidebar
-function clearSidebar() {
-  const shortsSidebar = document.querySelector('a[title="Shorts"]');
-  if (shortsSidebar !== null) {
-    shortsSidebar.parentElement.remove();
-    cleanedSidebar = true
+  if (browser.storage && browser.storage.onChanged) {
+    browser.storage.onChanged.addListener(changes => {
+      if (changes.sidebar || changes.rows || changes.videos) {
+        settings = {
+          sidebar: changes.sidebar ? changes.sidebar.newValue : settings.sidebar,
+          rows: changes.rows ? changes.rows.newValue : settings.rows,
+          videos: changes.videos ? changes.videos.newValue : settings.videos
+        };
+        cleanUpShorts();
+      }
+    });
   }
 }
 
-// Will remove any rich selection row, including Shorts, News
-function clearRichSelectionRow() {
-  const richSelectionRows = document.querySelectorAll('ytd-rich-section-renderer');
-  [...richSelectionRows].forEach(function(row) {
-    row.remove();
-  })
+function observePage() {
+  const observerRoot = document.body || document.documentElement;
+  const observer = new MutationObserver(() => {
+    if (!cleanupScheduled) {
+      cleanupScheduled = true;
+      window.requestAnimationFrame(() => {
+        cleanupScheduled = false;
+        cleanUpShorts();
+      });
+    }
+  });
+
+  observer.observe(observerRoot, { childList: true, subtree: true });
 }
 
-// Will remove any uploaded shorts on your subscription page
-function clearVideos() {
-  const shortVideos = document.querySelectorAll('span[aria-label="Shorts"]');
-  [...shortVideos].forEach(function(video) {
-    video.closest('ytd-rich-item-renderer.ytd-rich-grid-row').remove();
-  })
+function cleanUpShorts() {
+  if (settings.sidebar && !cleanedSidebar) {
+    clearSidebar();
+  }
+  if (settings.rows) {
+    clearRichSelectionRows();
+  }
+  if (settings.videos) {
+    clearShortsVideos();
+  }
 }
+
+function clearSidebar() {
+  const shortsLink = document.querySelector('a[title="Shorts"]');
+  if (!shortsLink) return;
+
+  const container = shortsLink.closest('ytd-guide-entry-renderer') || shortsLink.parentElement;
+  if (container) {
+    container.remove();
+    cleanedSidebar = true;
+  }
+}
+
+function clearRichSelectionRows() {
+  document.querySelectorAll('ytd-rich-section-renderer').forEach(row => {
+    if (row) row.remove();
+  });
+}
+
+function clearShortsVideos() {
+  document.querySelectorAll('span[aria-label="Shorts"]').forEach(badge => {
+    const item = badge.closest('ytd-rich-item-renderer');
+    if (item) item.remove();
+  });
+}
+
+init();
