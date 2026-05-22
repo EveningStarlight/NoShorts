@@ -1,40 +1,59 @@
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
+const observerRoot = document.body || document.documentElement;
 let cleanedSidebar = false;
-var observer = new MutationObserver(function(mutations, observer) {
-    if (!cleanedSidebar) {clearSidebar();}
-    clearRichSelectionRow();
-    clearVideos();
+let cleanupScheduled = false;
+
+const observer = new MutationObserver(() => {
+  if (!cleanupScheduled) {
+    cleanupScheduled = true;
+    window.requestAnimationFrame(() => {
+      cleanupScheduled = false;
+      cleanUpShorts();
+    });
+  }
 });
 
-// define what element should be observed by the observer
-// and what types of mutations trigger the callback
-observer.observe(document, {
-  subtree: true,
-  attributes: true
+observer.observe(observerRoot, {
+  childList: true,
+  subtree: true
 });
 
-// Will remve the shorts button from the youtube sidebar
+function cleanUpShorts() {
+  if (!cleanedSidebar) {
+    clearSidebar();
+  }
+  clearRichSelectionRows();
+  clearShortsVideos();
+}
+
 function clearSidebar() {
-  const shortsSidebar = document.querySelector('a[title="Shorts"]');
-  if (shortsSidebar !== null) {
-    shortsSidebar.parentElement.remove();
-    cleanedSidebar = true
+  const shortsLink = document.querySelector('a[title="Shorts"]');
+  if (!shortsLink) return;
+
+  const container = shortsLink.closest('ytd-guide-entry-renderer') || shortsLink.parentElement;
+  if (container) {
+    container.remove();
+    cleanedSidebar = true;
   }
 }
 
-// Will remove any rich selection row, including Shorts, News
-function clearRichSelectionRow() {
-  const richSelectionRows = document.querySelectorAll('ytd-rich-section-renderer');
-  [...richSelectionRows].forEach(function(row) {
-    row.remove();
-  })
+function clearRichSelectionRows() {
+  const rows = document.querySelectorAll('ytd-rich-section-renderer');
+  rows.forEach(row => {
+    const text = row.textContent || '';
+    if (/shorts|news/i.test(text)) {
+      row.remove();
+    }
+  });
 }
 
-// Will remove any uploaded shorts on your subscription page
-function clearVideos() {
-  const shortVideos = document.querySelectorAll('span[aria-label="Shorts"]');
-  [...shortVideos].forEach(function(video) {
-    video.closest('ytd-rich-item-renderer.ytd-rich-grid-row').remove();
-  })
+function clearShortsVideos() {
+  const shortBadges = document.querySelectorAll('span[aria-label="Shorts"]');
+  shortBadges.forEach(badge => {
+    const item = badge.closest('ytd-rich-item-renderer');
+    if (item) {
+      item.remove();
+    }
+  });
 }
