@@ -65,6 +65,7 @@ function cleanUpShorts() {
 function clearSidebar() {
   const shortsLink = document.querySelector('a[title="Shorts"]');
   if (!shortsLink) return;
+
   const container = shortsLink.closest('ytd-guide-entry-renderer') || shortsLink.parentElement;
   if (container) {
     container.remove();
